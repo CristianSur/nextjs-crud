@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 
 interface FormData {
     name: string;
-    // description: string;
 }
 
 export default function Edit() {
