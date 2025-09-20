@@ -1,28 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {prisma} from "../lib/prisma";
+import {NextRequest, NextResponse} from "next/server";
 
-interface Item {
-    id: number;
-    name: string;
-}
-
-// Simple in-memory store
-const items: Item[] = [];
-let currentId = 1;
-
-export async function GET(request: NextRequest) {
+export async function GET() {
+    const items = await prisma.item.findMany();
     return NextResponse.json(items);
 }
 
-export async function POST(request: NextRequest) {
-    const body = await request.json();
-    const { name } = body;
-
-    if (!name || typeof name !== 'string') {
-        return NextResponse.json({ error: 'Name is required and must be a string' }, { status: 400 });
-    }
-
-    const newItem = { id: currentId++, name };
-    items.push(newItem);
-
-    return NextResponse.json(newItem, { status: 201 });
+export async function POST(req: NextRequest) {
+    const body = await req.json();
+    const item = await prisma.item.create({ data: body });
+    return NextResponse.json(item, { status: 201 });
 }
